@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes')
+const cookieParser = require('cookie-parser')
 
 const app = express();
 
 // middleware
 app.use(express.static('public'));
 app.use(express.json()); //this middleware will turn json files into js objects
+app.use(cookieParser());
 
 // view engine
 app.set('view engine', 'ejs');
@@ -24,4 +26,18 @@ app.get('/smoothies', (req, res) => res.render('smoothies'));
 
 app.use(authRoutes)
 
-//upto video-5 10mins
+//cookies
+app.get('/set-cookies',(req,res)=>{
+
+  res.cookie('newUser', false, {maxAge: 100000, httpOnly: true, secure: true})
+  res.send('You got the cookies!')
+
+});
+
+app.get('/read-cookies',(req,res)=>{
+
+  const cookies = req.cookies;
+  console.log(cookies);
+  res.json(cookies);
+
+});
